@@ -12,9 +12,9 @@ public class TrappingRainWater {
 
     public static void main(String[] arg) {
         int[] arr = {0,1,0,2,1,0,1,3,2,1,2,1};
-        int[] arr1 = {3,0,2};
-        System.out.println(naiveMethod(arr1));
-        System.out.println(prefixArrayMethod(arr1));
+        int[] arr1 = {4,2,0,3,2,5};
+        System.out.println(naiveMethod(arr));
+        System.out.println(prefixArrayMethod(arr));
         System.out.println(twoPointerMethod(arr));
 
     }
@@ -90,26 +90,30 @@ public class TrappingRainWater {
      * Time complexity --- O(n)
      * Space complexity --- O(1)
      */
-    static int twoPointerMethod(int[] heights) {
+    static int twoPointerMethod(int[] height) {
 
         int L = 0;
-        int R = heights.length - 1;
+        int R = height.length - 1;
         int maxLeft = 0;
         int maxRight = 0 ;
-        int totalSum = 0;
+        int totalWater = 0;
 
         while (L < R) {
-            if(maxLeft <= maxRight) {
-                maxLeft = Math.max(maxLeft, heights[L]);
-                totalSum += Math.max(0, maxLeft - heights[L]);
+
+            if (height[L] <= height[R]) {
+                // left is the shorter wall — it is the binding constraint
+                maxLeft     = Math.max(maxLeft, height[L]);
+                totalWater += Math.max(0, maxLeft - height[L]);
                 L++;
+
             } else {
-                maxRight = Math.max(maxRight, heights[R]);
-                totalSum += Math.max(0, maxRight - heights[R]);
+                // right is the shorter wall — it is the binding constraint
+                maxRight    = Math.max(maxRight, height[R]);
+                totalWater += Math.max(0, maxRight - height[R]);
                 R--;
             }
         }
-        return totalSum;
+        return totalWater;
 
     }
 }
