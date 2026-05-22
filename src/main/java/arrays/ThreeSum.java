@@ -24,6 +24,7 @@ public class ThreeSum {
 
         for (int i = 0; i < array.length - 2; i++) {
 
+            // skip outer static pointer duplicate
             if(i > 0 && array[i] == array[i -1]) continue;
             int left = i + 1;
             int right = array.length - 1;
