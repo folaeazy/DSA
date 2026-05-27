@@ -47,6 +47,11 @@ public class LongestSubstring {
 
     }
 
+    /**
+     * Time complexity O(n)
+     * @param s
+     * @return
+     */
     static int longestSubstringSlidingWindowMethod(String s) {
         int n = s.length();
         Map<Character, Integer> map = new HashMap<>();
