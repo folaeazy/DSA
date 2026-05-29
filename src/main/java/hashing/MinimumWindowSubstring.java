@@ -12,6 +12,7 @@ public class MinimumWindowSubstring {
         String s = "abobecodebanc";
         String t =  "abc";
         System.out.println(naiveMethodSolution(s, t));
+        System.out.println(slidingWindowSolution(s, t));
     }
 
     /**
@@ -23,6 +24,7 @@ public class MinimumWindowSubstring {
      * Space complexity --
      */
     static  String naiveMethodSolution(String s, String t) {
+        if(s.isEmpty() || t.isEmpty()) return "";
         int n = s.length();
         String result = "";
 
@@ -68,9 +70,61 @@ public class MinimumWindowSubstring {
 
     /**
      *
-     * Time complexity --
+     * Time complexity -- 0(n)
      */
     static String slidingWindowSolution(String s, String t) {
+        if(s.isEmpty() || t.isEmpty())
+            return  "";
+
+        Map<Character, Integer> need = new HashMap<>();
+        // build the need map
+        for(char c : t.toCharArray()) {
+            need.put(c, need.getOrDefault(c, 0) + 1);
+        }
+
+        int required = need.size(); // the number of unique characters required
+        int formed = 0;  // used to track the number of required satisfied
+
+        // have -- hashmap
+        Map<Character, Integer> have = new HashMap<>();
+        int[] result = {-1, 0, 0}; // result initialized
+
+        int L = 0; // left pointer
+
+        // right expand and left shrink
+        for(int R = 0 ; R < s.length(); R++) {
+            char c = s.charAt(R);
+            have.put(c, have.getOrDefault(c, 0) +  1);
+
+            // what we added if its needed , we increment formed
+            if(need.containsKey(c) && have.get(c).equals(need.get(c))){
+                formed++;
+            }
+
+            // Shrinking from L
+            // if true it is a valid window
+            // update result and shrink L
+            while (formed == required && L <= R) {
+                if(result[0] == -1 || R - L + 1 <= result[0]) {
+                    result[0] = R - L + 1;
+                    result[1] = L;
+                    result [2] = R ;
+                }
+
+
+                char leftChar = s.charAt(L);
+                have.put(leftChar, have.get(leftChar) - 1 ); // remove from left
+                if(need.containsKey(leftChar) && have.get(leftChar) < need.get(leftChar)) {
+                    formed--;
+                }
+
+                L++;
+
+
+            }
+
+        }
+        return result[0] == -1 ? "" : s.substring(result[1], result[2] + 1);
 
     }
 
