@@ -13,7 +13,7 @@ public class HashTable {
         System.out.println(contact.get(new PhoneNumber( 234,  555,  3232)));
 
         Comparator<Integer> naturalOrder =
-                (i, j) ->  i < j ? -1 : (i == j ? 0 : 1);
+                (i, j) ->  i < j ? -1 : (i.equals(j) ? 0 : 1);
 
         System.out.println(naturalOrder.compare(42,42));
     }
