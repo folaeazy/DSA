@@ -76,4 +76,76 @@ public class LRUCache {
         addToFront(newNode);
     }
 
+    
+
+    public static void main(String[] args) {
+        System.out.println("=== LRU Cache — proving map and list share the same Node object ===\n");
+
+        LRUCache cache = new LRUCache(3);
+
+        System.out.println("put(1, 100)");
+        cache.put(1, 100);
+        cache.printOrder("  order");
+        cache.proveSameObject(1);
+
+        System.out.println("\nput(2, 200)");
+        cache.put(2, 200);
+        cache.printOrder("  order");
+
+        System.out.println("\nput(3, 300)");
+        cache.put(3, 300);
+        cache.printOrder("  order");
+
+        System.out.println("\nget(1)  -> should move key 1 to the FRONT (MRU)");
+        int v = cache.get(1);
+        System.out.println("  returned value = " + v);
+        cache.printOrder("  order");
+        cache.proveSameObject(1);
+
+        System.out.println("\nput(4, 400)  -> cache is full (capacity 3), should evict key 2 (it is now LRU)");
+        cache.put(4, 400);
+        cache.printOrder("  order");
+
+        System.out.println("\nget(2)  -> should return -1, key 2 was evicted");
+        System.out.println("  returned value = " + cache.get(2));
+
+        System.out.println("\n=== Now the key proof: mutate through the MAP reference, check the LIST sees it ===");
+        LRUCache.Node n = cache.map.get(3);
+        System.out.println("Before mutation, list shows:");
+        cache.printOrder("  order");
+        System.out.println("Manually changing node.value via the reference we got from the MAP...");
+        n.value = 9999;
+        System.out.println("After mutating the map's reference, list now shows:");
+        cache.printOrder("  order");
+        System.out.println("  -> key 3's value changed to 9999 in the LIST too, because it is the SAME object.");
+    }
+
+    private void proveSameObject(int key) {
+        Node fromMap = map.get(key);
+        // walk the list to find the "same" key manually
+        Node cur = head.next;
+        Node fromList = null;
+        while (cur != tail) {
+            if (cur.key == key) { fromList = cur; break; }
+            cur = cur.next;
+        }
+        boolean identical = (fromMap == fromList); // == compares OBJECT IDENTITY (memory address), not .equals()
+        System.out.println("   key=" + key
+                + " | map's Node hashCode=" + System.identityHashCode(fromMap)
+                + " | list's Node hashCode=" + System.identityHashCode(fromList)
+                + " | SAME OBJECT? " + identical);
+    }
+
+    private void printOrder(String label) {
+        StringBuilder sb = new StringBuilder(label + ": [");
+        Node cur = head.next;
+        while (cur != tail) {
+            sb.append(cur.key).append("=").append(cur.value);
+            if (cur.next != tail) sb.append(", ");
+            cur = cur.next;
+        }
+        sb.append("]  (front=MRU ... back=LRU)");
+        System.out.println(sb);
+    }
+
 }
